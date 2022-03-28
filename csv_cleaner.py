@@ -24,7 +24,7 @@ def size_color_separator(row, option="size"):
 
 
 def clean_csv(df):
-    # drop unnecessary columns
+    # drop unused columns
     remove_columns = ["weight", "tax_details", "customer_tax_exempt",
                       "customer_tax_id", "reversed_tax_applied",
                       "shipto_person_phone", "detail_discount", "order_weight",
@@ -41,7 +41,7 @@ def clean_csv(df):
         str(row["options"]), "size"), axis=1)
     df["color"] = df.apply(lambda row: size_color_separator(
         str(row["options"]), "color"), axis=1)
-    
+
     # remove options columns
     df.drop("options", inplace=True, axis=1)
 
