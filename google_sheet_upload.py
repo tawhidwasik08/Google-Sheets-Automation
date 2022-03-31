@@ -6,6 +6,7 @@ import argparse
 import os
 import datetime
 import sys
+from google.auth.exceptions import TransportError
 
 
 def latest_dataset_finder(dataset_names):
@@ -63,7 +64,11 @@ def main(args):
 
     new_data = load_dataset()
 
-    sheet = gc.open(secrets["GOOGLE_SHEET_FILE"])
+    try:
+        sheet = gc.open(secrets["GOOGLE_SHEET_FILE"])
+    except TransportError as e:
+        print(f"Can't connect to sheets (net down maybe?).\n{e}\n\n")
+        sys.exit(0)
     working_sheet = sheet[0]
 
     if args.create == True:
