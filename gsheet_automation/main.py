@@ -1,12 +1,12 @@
 import pygsheets
-import pandas as pd
-from csv_cleaner import *
-from secrets import secrets
+from utilities import *
+import json
 import argparse
 import os
 import datetime
 import sys
 from google.auth.exceptions import TransportError
+from pathlib import Path
 
 
 def latest_dataset_finder(dataset_names):
@@ -16,16 +16,16 @@ def latest_dataset_finder(dataset_names):
     return dataset_names[0]
 
 
-def load_dataset():
+def load_dataset(dataset_loc):
     all_dataset_names = []
-    for file in os.listdir(secrets["DATASET_FILE_DIR"]):
+    for file in os.listdir(dataset_loc):
         if file.endswith(".csv"):
             all_dataset_names.append(file)
 
     try:
         latest_dataset_name = latest_dataset_finder(all_dataset_names)
         print(f"Latest dataset found:{latest_dataset_name}")
-        df = pd.read_csv(secrets["DATASET_FILE_DIR"] +
+        df = pd.read_csv(dataset_loc +
                          latest_dataset_name, encoding="UTF-8")
         df = clean_csv(df)
         df = df.sort_values(by=["order_number"], ascending=True)
@@ -45,7 +45,8 @@ def update_df(working_sheet, new_df):
     latest_order_num = new_df['order_number'].max()
 
     if latest_order_num > last_existing_order_num:
-        extra_df = new_df.loc[new_df['order_number'] > last_existing_order_num,:]
+        extra_df = new_df.loc[new_df['order_number']
+                              > last_existing_order_num, :]
         working_sheet.set_dataframe(
             extra_df.copy(), (next_empty_row, 1), copy_head=False)
         print(f"{extra_df.shape[0]} Rows are updated.")
@@ -58,17 +59,20 @@ def update_df(working_sheet, new_df):
     return None
 
 
-def main(args):
+def main(args, project_path):
+    f = open(f"{project_path}/data/secrets.json")
+    secrets = json.load(f)
+
     gc = pygsheets.authorize(
         service_file=secrets["GC_AUTH_FILE"])
 
-    new_data = load_dataset()
+    new_data = load_dataset(secrets["DATASET_FILE_DIR"])
 
     try:
         sheet = gc.open(secrets["GOOGLE_SHEET_FILE"])
     except TransportError as e:
         print(f"Can't connect to sheets (net down maybe?).\n{e}\n\n")
-        sys.exit(0)
+        sys.exit(1)
     working_sheet = sheet[0]
 
     if args.create == True:
@@ -88,4 +92,5 @@ if __name__ == '__main__':
     parser.add_argument(
         "-c", "--create", action="store_true", help="Create new df at starting position of sheet")
     args = parser.parse_args()
-    main(args)
+    project_path = Path(__file__).parents[1].absolute()
+    main(args, project_path)
