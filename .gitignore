@@ -2,3 +2,4 @@ __pycache__/
 data/*
 secrets.py
 suspect-gsheet-automation.code-workspace
+*.out

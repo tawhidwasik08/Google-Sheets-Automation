@@ -3,7 +3,7 @@
 source ~/anaconda3/etc/profile.d/conda.sh
 conda activate suspect
 
-# checking current conda environment (suspect)
+# checking current conda environment
 echo -e "\n-------->> Active environment: $CONDA_DEFAULT_ENV <<--------\n"
 
 # read for different options
