@@ -1,5 +1,5 @@
 # Google Sheets Automation
-  [![HitCount](https://hits.dwyl.com/tawhidwasik08/Google-Sheets-Automation.svg?style=flat-square)](http://hits.dwyl.com/tawhidwasik08/Google-Sheets-Automation)
+  [![HitCount](https://hits.dwyl.com/tawhidwasik08/Google-Sheets-Automation.svg?style=flat-square&show=unique)](http://hits.dwyl.com/tawhidwasik08/Google-Sheets-Automation)
  
 # A Little Explanation on The Project
 This project is about quality of life improvement. For one of my projects in my job, there was a challange where we had to collect data from a CRM website daily for data visualiztion along with data from some other sources which wouldn't require any additional data storing. 
@@ -61,4 +61,4 @@ Add `<monitored_dir> <mask>,<mask> <path_of_bash> <executable_shell>`
 /absolute_path.../Google_Sheet_Automation/data/ IN_CREATE,IN_MOVED /bin/bash /absolute_path.../Google_Sheet_Automation/gsheet_automation/update_shell.sh
 ```
 
-## For obvious privacy reasons no data was uploaded
+:warning: ***For obvious privacy reasons no data was uploaded***
