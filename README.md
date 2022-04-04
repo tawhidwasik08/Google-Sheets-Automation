@@ -1,5 +1,5 @@
 # Google Sheets Automation
- [![HitCount](https://hits.dwyl.com/tawhidwasik08/https://githubcom/tawhidwasik08/Google-Sheets-Automation.svg?style=flat)](http://hits.dwyl.com/tawhidwasik08/https://githubcom/tawhidwasik08/Google-Sheets-Automation)
+  [![HitCount](https://hits.dwyl.com/tawhidwasik08/Google-Sheets-Automation.svg?style=flat-square)](http://hits.dwyl.com/tawhidwasik08/Google-Sheets-Automation)
  
 # A Little Explanation on The Project
 This project is about quality of life improvement. For one of my projects in my job, there was a challange where we had to collect data from a CRM website daily for data visualiztion along with data from some other sources which wouldn't require any additional data storing. 

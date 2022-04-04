@@ -1,10 +1,19 @@
 import pandas as pd
 import re
 
-pd.set_option('display.max_columns', None)
 
+def size_color_separator(row: str, option: str="size") -> str :
+    """regular expression matcher to find text after size and color options.
 
-def size_color_separator(row, option="size"):
+    Args:
+        row: str value for the options.
+        option: option to match (size or color)
+    Returns:
+        actual value for the size or color option.
+    Raises:
+        AttributeError: if the df row value is a empty string. 
+
+    """
     if option == "size":
         re_text = "size:"
     elif option == "color":
@@ -23,7 +32,18 @@ def size_color_separator(row, option="size"):
     return sliced_str
 
 
-def clean_csv(df):
+def clean_csv(df: pd.DataFrame) -> pd.DataFrame:
+    """cleans the dataframe.
+
+    Args:
+        df: the df to be cleaned.
+    Returns:
+        cleaned df.
+    Raises:
+        None.
+
+    """
+    
     # drop unused columns
     remove_columns = ["weight", "tax_details", "customer_tax_exempt",
                       "customer_tax_id", "reversed_tax_applied",

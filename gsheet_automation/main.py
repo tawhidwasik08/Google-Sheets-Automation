@@ -1,3 +1,4 @@
+from pandas import DataFrame
 import pygsheets
 from utilities import *
 import json
@@ -9,14 +10,34 @@ from google.auth.exceptions import TransportError
 from pathlib import Path
 
 
-def latest_dataset_finder(dataset_names):
+def latest_dataset_finder(dataset_names: list) -> str:
+    """find the latest dataset based on the file name.
+
+    Args:
+        dataset_names: list of the csv file names in the directory.
+    Returns:
+        the latest dataset name's string.
+    Raises:
+        None.
+
+    """
     format = '%Y-%m-%d_%H-%M'
     dataset_names = sorted(dataset_names, key=lambda x: datetime.datetime.strptime(
         x[7:-4], format), reverse=True)
     return dataset_names[0]
 
 
-def load_dataset(dataset_loc):
+def load_dataset(dataset_loc: str) -> DataFrame:
+    """Go through all .csv in the directory, find the latest one.
+
+    Args:
+        dataset_loc: directory where .csv are located.
+    Returns:
+        latest dataframe found in the directory.     
+    Raises:
+        IndexError: if no dataset is found.
+
+    """
     all_dataset_names = []
     for file in os.listdir(dataset_loc):
         if file.endswith(".csv"):
@@ -35,7 +56,18 @@ def load_dataset(dataset_loc):
     return df
 
 
-def update_df(working_sheet, new_df):
+def update_df(working_sheet: pygsheets.worksheet.Worksheet, new_df: DataFrame) -> None:
+    """updates the existing googlesheet with only new rows.
+
+    Args:
+        working_sheet: the existing googlesheet connected.
+        new_df: latest datasets dataframe found in the directory.
+    Returns:
+        None.
+    Raises:
+        None.
+
+    """
 
     existing_order_values = working_sheet.get_col(
         1, include_tailing_empty=False)
@@ -59,7 +91,18 @@ def update_df(working_sheet, new_df):
     return None
 
 
-def main(args, project_path):
+def main(args: argparse.Namespace, project_path: str) -> None:
+    """Read secret information, connects with gsheet, uploads whole dataset if 
+    namespace is true, else updates only new rows.
+
+    Args:
+        args: namespace for creating the whole dataset.
+    Returns:
+        None.
+    Raises:
+        TransportError: if can't connect to/authorize gsheet.
+
+    """
     f = open(f"{project_path}/data/secrets.json")
     secrets = json.load(f)
 
@@ -76,7 +119,6 @@ def main(args, project_path):
     working_sheet = sheet[0]
 
     if args.create == True:
-        # update the first sheet with df, starting at cell B2.
         working_sheet.clear()
         working_sheet.set_dataframe(new_data, (1, 1))
         print("New dataset uploaded.")
@@ -90,7 +132,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Create a new df or update existing df (default) in Google Sheet')
     parser.add_argument(
-        "-c", "--create", action="store_true", help="Create new df at starting position of sheet")
+        "-c", "--create", action="store_true", help="Create new df at starting position of google sheet")
     args = parser.parse_args()
-    project_path = Path(__file__).parents[1].absolute()
+    project_path = Path(__file__).resolve().parents[1]
     main(args, project_path)
